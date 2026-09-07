@@ -3,15 +3,6 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <link rel="manifest" href="manifest.json">
-
-<meta name="theme-color" content="#101010">
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Distance XY">
-
-<link rel="apple-touch-icon" href="icon-192.png">
 
   <meta
     name="viewport"
@@ -20,7 +11,16 @@
 
   <title>Distance XY</title>
 
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.png">
+
+  <meta name="theme-color" content="#101010">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Distance XY">
+
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -47,6 +47,7 @@
       margin: 0 auto;
     }
 
+
     /* =========================
        RESULTAT
        ========================= */
@@ -60,14 +61,14 @@
       border: 1px solid #3b3b3b;
       border-radius: 14px;
 
-      padding: 12px 10px;
+      padding: 10px;
       margin-bottom: 10px;
 
       text-align: center;
     }
 
     .result-label {
-      font-size: 13px;
+      font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 1px;
       opacity: 0.65;
@@ -75,16 +76,165 @@
     }
 
     .result-value {
-      font-size: clamp(34px, 10vw, 52px);
+      font-size: clamp(32px, 9vw, 48px);
       font-weight: 700;
       line-height: 1;
     }
 
     .result-unit {
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 400;
       opacity: 0.75;
     }
+
+
+    /* =========================
+       BOUSSOLE
+       ========================= */
+
+    .compass-area {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+
+      margin-top: 10px;
+    }
+
+    .compass {
+      position: relative;
+
+      width: 92px;
+      height: 92px;
+
+      border: 2px solid #777;
+      border-radius: 50%;
+
+      background: #121212;
+    }
+
+    .compass-letter {
+      position: absolute;
+
+      font-size: 11px;
+      font-weight: 700;
+      opacity: 0.7;
+    }
+
+    .north {
+      top: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .south {
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .east {
+      right: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .west {
+      left: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .compass-center {
+      position: absolute;
+
+      left: 50%;
+      top: 50%;
+
+      width: 8px;
+      height: 8px;
+
+      border-radius: 50%;
+
+      background: white;
+
+      transform: translate(-50%, -50%);
+
+      z-index: 3;
+    }
+
+    .needle {
+      position: absolute;
+
+      left: 50%;
+      top: 50%;
+
+      width: 4px;
+      height: 68px;
+
+      transform:
+        translate(-50%, -50%)
+        rotate(0deg);
+
+      transform-origin: center center;
+
+      transition: transform 0.15s ease-out;
+
+      z-index: 2;
+    }
+
+    .needle::before {
+      content: "";
+
+      position: absolute;
+
+      left: 50%;
+      top: 0;
+
+      transform: translateX(-50%);
+
+      width: 0;
+      height: 0;
+
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 34px solid #ffffff;
+    }
+
+    .needle::after {
+      content: "";
+
+      position: absolute;
+
+      left: 50%;
+      bottom: 0;
+
+      transform: translateX(-50%);
+
+      width: 3px;
+      height: 32px;
+
+      background: #555;
+    }
+
+    .heading-info {
+      text-align: left;
+      min-width: 110px;
+    }
+
+    .heading-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.55;
+      margin-bottom: 4px;
+    }
+
+    .heading-value {
+      font-size: 26px;
+      font-weight: 700;
+    }
+
 
     /* =========================
        CHAMPS
@@ -105,14 +255,18 @@
 
     label {
       display: block;
+
       font-size: 12px;
       font-weight: bold;
+
       opacity: 0.65;
+
       margin: 0 0 4px 3px;
     }
 
     input {
       display: block;
+
       width: 100%;
       height: 56px;
 
@@ -136,13 +290,12 @@
       background: #2d2d2d;
     }
 
-    /* enlève les flèches number sur certains navigateurs */
-
     input::-webkit-inner-spin-button,
     input::-webkit-outer-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
+
 
     /* =========================
        DETAILS
@@ -164,6 +317,7 @@
       border-radius: 10px;
 
       padding: 8px;
+
       text-align: center;
     }
 
@@ -177,6 +331,7 @@
       font-size: 17px;
       font-weight: 600;
     }
+
 
     /* =========================
        RESET
@@ -210,6 +365,7 @@
 
   <main class="app">
 
+
     <section class="result">
 
       <div class="result-label">
@@ -221,12 +377,48 @@
         <span class="result-unit">m</span>
       </div>
 
+
+      <div class="compass-area">
+
+        <div class="compass">
+
+          <span class="compass-letter north">N</span>
+          <span class="compass-letter east">E</span>
+          <span class="compass-letter south">S</span>
+          <span class="compass-letter west">W</span>
+
+          <div
+            class="needle"
+            id="needle"
+          ></div>
+
+          <div class="compass-center"></div>
+
+        </div>
+
+
+        <div class="heading-info">
+
+          <div class="heading-label">
+            Orientation
+          </div>
+
+          <div class="heading-value">
+            <span id="heading">—</span>
+          </div>
+
+        </div>
+
+      </div>
+
     </section>
+
 
 
     <section class="coordinates">
 
       <div class="field">
+
         <label for="x1">X1</label>
 
         <input
@@ -238,10 +430,12 @@
           autocomplete="off"
           placeholder="0"
         >
+
       </div>
 
 
       <div class="field">
+
         <label for="y1">Y1</label>
 
         <input
@@ -253,10 +447,12 @@
           autocomplete="off"
           placeholder="0"
         >
+
       </div>
 
 
       <div class="field">
+
         <label for="x2">X2</label>
 
         <input
@@ -268,10 +464,12 @@
           autocomplete="off"
           placeholder="0"
         >
+
       </div>
 
 
       <div class="field">
+
         <label for="y2">Y2</label>
 
         <input
@@ -283,9 +481,11 @@
           autocomplete="off"
           placeholder="0"
         >
+
       </div>
 
     </section>
+
 
 
     <section class="details">
@@ -326,7 +526,9 @@
       Effacer
     </button>
 
+
   </main>
+
 
 
   <script>
@@ -348,17 +550,40 @@
     const ydiffElement =
       document.getElementById("ydiff");
 
+    const headingElement =
+      document.getElementById("heading");
+
+    const needleElement =
+      document.getElementById("needle");
+
     const resetButton =
       document.getElementById("reset");
 
 
-    function calculateDistance() {
 
-      /*
-        On attend que les 4 valeurs
-        soient renseignées avant
-        d'afficher un résultat.
-      */
+    function getDirection(angle) {
+
+      const directions = [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ];
+
+      const index =
+        Math.round(angle / 45) % 8;
+
+      return directions[index];
+
+    }
+
+
+
+    function calculateDistance() {
 
       const allFilled = inputs.every(
         input => input.value.trim() !== ""
@@ -368,17 +593,33 @@
       if (!allFilled) {
 
         distanceElement.textContent = "—";
+
         xdiffElement.textContent = "—";
+
         ydiffElement.textContent = "—";
 
+        headingElement.textContent = "—";
+
+        needleElement.style.transform =
+          "translate(-50%, -50%) rotate(0deg)";
+
         return;
+
       }
 
 
-      const x1 = parseFloat(inputs[0].value);
-      const y1 = parseFloat(inputs[1].value);
-      const x2 = parseFloat(inputs[2].value);
-      const y2 = parseFloat(inputs[3].value);
+      const x1 =
+        parseFloat(inputs[0].value);
+
+      const y1 =
+        parseFloat(inputs[1].value);
+
+      const x2 =
+        parseFloat(inputs[2].value);
+
+      const y2 =
+        parseFloat(inputs[3].value);
+
 
 
       if (
@@ -393,122 +634,162 @@
       }
 
 
-      /*
-        Conversion en mètres
-      */
+
+      /* =========================
+         DIFFERENCES
+         ========================= */
+
+      const rawXDiff =
+        x2 - x1;
+
+      const rawYDiff =
+        y2 - y1;
+
 
       const xdiff =
-        Math.abs(x1 - x2) * 100;
+        Math.abs(rawXDiff) * 100;
 
       const ydiff =
-        Math.abs(y1 - y2) * 100;
+        Math.abs(rawYDiff) * 100;
 
 
-      /*
-        Théorème de Pythagore
-      */
+
+      /* =========================
+         DISTANCE
+         ========================= */
 
       const distance =
         Math.hypot(xdiff, ydiff);
 
 
+
+      /* =========================
+         ANGLE / AZIMUT
+         
+         0°   = Nord
+         90°  = Est
+         180° = Sud
+         270° = Ouest
+         ========================= */
+
+      let angle =
+        Math.atan2(
+          rawXDiff,
+          rawYDiff
+        ) * 180 / Math.PI;
+
+
+      if (angle < 0) {
+        angle += 360;
+      }
+
+
+      const roundedAngle =
+        Math.round(angle);
+
+
+      const direction =
+        getDirection(angle);
+
+
+
+      /* =========================
+         AFFICHAGE
+         ========================= */
+
       distanceElement.textContent =
         distance.toFixed(2);
+
 
       xdiffElement.textContent =
         xdiff.toFixed(2);
 
+
       ydiffElement.textContent =
         ydiff.toFixed(2);
+
+
+      headingElement.textContent =
+        roundedAngle + "° " + direction;
+
+
+
+      /* =========================
+         AIGUILLE
+         ========================= */
+
+      needleElement.style.transform =
+        `translate(-50%, -50%) rotate(${angle}deg)`;
 
     }
 
 
-    inputs.forEach((input, index) => {
 
-      /*
-        Recalcul instantané
-        à chaque caractère tapé
-      */
+    inputs.forEach(
+      (input, index) => {
 
-      input.addEventListener(
-        "input",
-        calculateDistance
-      );
+        input.addEventListener(
+          "input",
+          calculateDistance
+        );
 
 
-      /*
-        Sélection automatique
-        du contenu lorsqu'on
-        arrive dans un champ.
-      */
-
-      input.addEventListener(
-        "focus",
-        () => {
-
-          setTimeout(
-            () => input.select(),
-            50
-          );
-
-        }
-      );
-
-
-      /*
-        Entrée / Suivant
-        -> champ suivant
-      */
-
-      input.addEventListener(
-        "keydown",
-        event => {
-
-          if (event.key !== "Enter") {
-            return;
-          }
-
-
-          event.preventDefault();
-
-
-          if (index < inputs.length - 1) {
-
-            const nextInput =
-              inputs[index + 1];
-
-            nextInput.focus();
-
+        input.addEventListener(
+          "focus",
+          () => {
 
             setTimeout(
-              () => nextInput.select(),
+              () => input.select(),
               50
             );
 
           }
+        );
 
-          else {
 
-            /*
-              Sur Y2 :
-              on conserve le résultat
-              mais on ferme le clavier.
-            */
+        input.addEventListener(
+          "keydown",
+          event => {
 
-            input.blur();
+            if (event.key !== "Enter") {
+              return;
+            }
+
+
+            event.preventDefault();
+
+
+            if (
+              index <
+              inputs.length - 1
+            ) {
+
+              const nextInput =
+                inputs[index + 1];
+
+              nextInput.focus();
+
+
+              setTimeout(
+                () => nextInput.select(),
+                50
+              );
+
+            }
+
+            else {
+
+              input.blur();
+
+            }
 
           }
+        );
 
-        }
-      );
-
-    });
+      }
+    );
 
 
-    /*
-      RESET
-    */
 
     resetButton.addEventListener(
       "click",
@@ -526,16 +807,34 @@
     );
 
 
+
+    /* =========================
+       SERVICE WORKER
+       ========================= */
+
+    if (
+      "serviceWorker" in navigator
+    ) {
+
+      window.addEventListener(
+        "load",
+        () => {
+
+          navigator.serviceWorker.register(
+            "./service-worker.js"
+          );
+
+        }
+      );
+
+    }
+
+
+
     calculateDistance();
 
   </script>
-<script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./service-worker.js");
-    });
-  }
-</script>
+
 </body>
 </html>
 ```
